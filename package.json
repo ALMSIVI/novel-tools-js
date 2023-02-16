@@ -1,0 +1,27 @@
+{
+  "name": "novel-tools",
+  "version": "0.0.1",
+  "description": "Repository for Novel Tools",
+  "author": "ALMSIVI",
+  "license": "WTFPL",
+  "scripts": {
+    "typecheck": "tsc",
+    "lint": "eslint .",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.2.0",
+    "@types/node": "^18.11.4",
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@typescript-eslint/parser": "^5.40.1",
+    "eslint": "^8.26.0",
+    "eslint-config-prettier": "^8.5.0",
+    "jest": "^29.2.1",
+    "prettier": "^2.7.1",
+    "ts-jest": "^29.0.3"
+  },
+  "dependencies": {
+    "typescript": "^4.8.3",
+    "ts-node": "^10.9.1"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@novel-tools/shared",
+  "version": "0.0.1",
+  "description": "Shared files for all Novel Tools packages.",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc",
+    "lint": "eslint .",
+    "test": "jest"
+  },
+  "dependencies": {
+    "dedent": "^0.7.0"
+  },
+  "devDependencies": {
+    "@types/dedent": "^0.7.0"
+  }
+}
