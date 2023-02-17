@@ -1,3 +1,18 @@
 {
-  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ES2020",
+    "target": "ES2020",
+    "noEmit": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@novel-tools/*": [
+        "./packages/*/src/index.ts"
+      ]
+    }
+  }
 }

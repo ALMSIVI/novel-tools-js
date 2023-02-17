@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest'
 import { parseType } from '../src'
 
 describe('data', () => {

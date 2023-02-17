@@ -36,7 +36,7 @@ export function parseNumber(num: string): number {
         // Fallback: parse as a plain number
         if (v === undefined) {
             const parsed = Number(num)
-            if (isFinite(parsed)) {
+            if (!isFinite(parsed)) {
                 throw new SyntaxError(`Cannot parse '${num}' to a number.`)
             }
 
