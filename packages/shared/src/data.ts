@@ -1,43 +1,32 @@
-import { parseNumber } from './utils'
+import { z } from 'zod'
 
-const plainTypes = ['BOOK_TITLE', 'BOOK_INTRO', 'VOLUME_INTRO', 'CHAPTER_CONTENT', 'UNRECOGNIZED'] as const
-const indexedTypes = ['VOLUME_TITLE', 'CHAPTER_TITLE'] as const
+export const novelTypeSchema = z.union([
+  z.object({ type: z.enum(['BOOK_TITLE', 'BOOK_INTRO', 'VOLUME_INTRO', 'CHAPTER_CONTENT', 'UNRECOGNIZED']) }),
+  z.object({
+    type: z.enum(['VOLUME_TITLE', 'CHAPTER_TITLE']),
+    index: z.coerce.number().int(),
+    tag: z.string().optional(),
+  }),
+])
 
-export type NovelType =
-  | { type: (typeof plainTypes)[number] }
-  | { type: (typeof indexedTypes)[number]; index: number; tag?: string }
+export type NovelType = z.infer<typeof novelTypeSchema>
 
-export function parseType(type: string, index?: string, tag?: string): NovelType {
-  type = type.toUpperCase()
-  if (isType(type, plainTypes)) {
-    return { type }
-  }
-
-  if (isType(type, indexedTypes)) {
-    if (index === undefined) {
-      throw new TypeError(`index is not specified for type ${type}.`)
-    }
-    return { type, index: parseNumber(index), tag }
-  }
-
-  throw new TypeError(`${type} is not a valid novel type.`)
-}
-
-function isType<T extends string>(value: string, array: readonly T[]): value is T {
-  return (array as ReadonlyArray<string>).includes(value)
-}
+export const novelDataSchema = z.intersection(
+  novelTypeSchema,
+  z.object({
+    /**
+     * If the type is not a title, then the content will be the matcher's input. If a title is matched, then
+     * content will be the title name.
+     */
+    content: z.string(),
+    lineNum: z.coerce.number().int().optional(),
+    /** Source file for this novel data. */
+    source: z.string().optional(),
+    rawContent: z.string().optional(),
+    /** If there is an error during processing, this field will be populated with the error message. */
+    errors: z.array(z.string()).optional(),
+  }),
+)
 
 /** Represents an intermediate object of the worker. */
-export type NovelData = NovelType & {
-  /**
-   * If the type is not a title, then the content will be the matcher's input. If a title is matched, then
-   * content will be the title name.
-   */
-  content: string
-  lineNum?: number
-  /** Source file for this novel data. */
-  source?: string
-  rawContent?: string
-  /** If there is an error during processing, this field will be populated with the error message. */
-  errors?: string[]
-}
+export type NovelData = z.infer<typeof novelDataSchema>
