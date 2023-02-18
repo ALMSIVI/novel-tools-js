@@ -13,6 +13,9 @@
       "@novel-tools/*": [
         "./packages/*/src/index.ts"
       ]
-    }
+    },
+    "types": [
+      "vitest/globals"
+    ]
   }
 }

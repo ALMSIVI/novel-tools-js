@@ -1,4 +1,3 @@
-import { describe, it, expect } from 'vitest'
 import { novelDataSchema, novelTypeSchema } from '../src'
 
 describe('data', () => {
