@@ -1,9 +1,9 @@
-import { regex, path } from '../src/validators'
+import { regexValidator, directoryValidator, fileValidator } from '../src/validators'
 import fs from 'fs'
 
 describe('validators', () => {
   it('regex', () => {
-    const chapterTitle = regex().parse('^Chapter (\\d+) (.+)$');
+    const chapterTitle = regexValidator().parse('^Chapter (\\d+) (.+)$')
     const match = chapterTitle.exec('Chapter 3 Some Title')
     expect(match).not.toBeNull()
     if (match !== null) {
@@ -12,9 +12,21 @@ describe('validators', () => {
     }
   })
 
-  it('path', () => {
-    vi.spyOn(fs, 'existsSync').mockImplementation(arg => arg === 'file1')
-    expect(path().parse('file1')).toBe('file1')
-    expect(() => path().parse('file2')).toThrow()
+  it('directory', () => {
+    //@ts-expect-error Only need one method
+    vi.spyOn(fs, 'statSync').mockImplementation((path) => ({
+      isDirectory: () => path === 'dir',
+    }))
+    expect(directoryValidator().parse('dir')).toBe('dir')
+    expect(() => directoryValidator().parse('file')).toThrow()
+  })
+
+  it('file', () => {
+    //@ts-expect-error Only need one method
+    vi.spyOn(fs, 'statSync').mockImplementation((path) => ({
+      isFile: () => path === 'file',
+    }))
+    expect(fileValidator().parse('file')).toBe('file')
+    expect(() => fileValidator().parse('dir')).toThrow()
   })
 })
