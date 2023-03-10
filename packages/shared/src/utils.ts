@@ -1,4 +1,6 @@
 import dedent from 'dedent'
+import fs from 'fs'
+import iconv from 'iconv-lite'
 
 // noinspection NonAsciiCharacters
 const numDict: Record<string, number> = {
@@ -65,4 +67,13 @@ export function purifyName(filename: string): string {
 
 export function formatText(text: string): string {
   return dedent(text).trim()
+}
+
+export function readFile(filename: string, encoding?: string) {
+  const buffer = fs.readFileSync(filename)
+  return encoding === undefined ? buffer.toString('utf-8') : iconv.decode(buffer, encoding)
+}
+
+export function getLines(content: string) {
+  return content.split(/\r?\n/)
 }

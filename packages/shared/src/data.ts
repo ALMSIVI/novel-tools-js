@@ -1,15 +1,34 @@
 import { z } from 'zod'
 
+export const unIndexedTypeEnum = [
+  'BOOK_TITLE',
+  'BOOK_INTRO',
+  'VOLUME_INTRO',
+  'CHAPTER_CONTENT',
+  'UNRECOGNIZED',
+] as const
+export type UnindexedType = (typeof unIndexedTypeEnum)[number]
+export const indexedTypeEnum = ['VOLUME_TITLE', 'CHAPTER_TITLE'] as const
+export type IndexedType = (typeof indexedTypeEnum)[number]
+export const dataTypeEnum = [...unIndexedTypeEnum, ...indexedTypeEnum] as const
+export type DataType = (typeof dataTypeEnum)[number]
+
+export function isUnindexedType(t: DataType): t is UnindexedType {
+  return (unIndexedTypeEnum as readonly string[]).includes(t)
+}
+
+export function isindexedType(t: DataType): t is IndexedType {
+  return (indexedTypeEnum as readonly string[]).includes(t)
+}
+
 export const novelTypeSchema = z.union([
-  z.object({ type: z.enum(['BOOK_TITLE', 'BOOK_INTRO', 'VOLUME_INTRO', 'CHAPTER_CONTENT', 'UNRECOGNIZED']) }),
+  z.object({ type: z.enum(unIndexedTypeEnum) }),
   z.object({
-    type: z.enum(['VOLUME_TITLE', 'CHAPTER_TITLE']),
+    type: z.enum(dataTypeEnum),
     index: z.coerce.number().int(),
     tag: z.string().optional(),
   }),
 ])
-
-export type NovelType = z.infer<typeof novelTypeSchema>
 
 export const novelDataSchema = z.intersection(
   novelTypeSchema,

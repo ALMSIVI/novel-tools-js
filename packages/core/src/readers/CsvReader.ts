@@ -1,13 +1,10 @@
-import fs from 'fs'
 import { z } from 'zod'
 import { parse } from 'csv/sync'
-import iconv from 'iconv-lite'
-import { novelDataSchema, NovelData, Reader, validators } from '@novel-tools/shared'
+import { novelDataSchema, NovelData, Reader, validators, utils } from '@novel-tools/shared'
 
 export const validator = z.object({
   filename: validators
-    .fileValidator()
-    .optional()
+    .existentFile()
     .default('list.csv')
     .describe(
       'Filename of the csv list file. This file should be generated from `CsvWriter`, i.e., it must contain at least type, index and content.',
@@ -19,12 +16,11 @@ export const validator = z.object({
  * Recovers the novel structure from the csv list.
  */
 export class CsvReader implements Reader {
-  list: Record<string, string>[]
+  private readonly list: Record<string, string>[]
 
   constructor(options: object) {
     const { filename, encoding } = validator.parse(options)
-    const buffer = fs.readFileSync(filename)
-    const contents = encoding === undefined ? buffer.toString('utf-8') : iconv.decode(buffer, encoding)
+    const contents = utils.readFile(filename, encoding)
     this.list = parse(contents, { columns: true, skip_empty_lines: true }) as Record<string, string>[]
   }
 
@@ -36,7 +32,7 @@ export class CsvReader implements Reader {
         if (e instanceof Error) {
           console.error(`Error parsing CSV Line (${JSON.stringify(line)}): ${e.message}`)
         } else {
-          console.error(`Unknown error parsing CSV Line (${JSON.stringify(line)}): ${e}`)
+          console.error(`Unknown error parsing CSV Line (${JSON.stringify(line)}): ${JSON.stringify(e)}`)
         }
         throw e
       }

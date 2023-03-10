@@ -11,6 +11,6 @@
   "dependencies": {
     "@novel-tools/shared": "workspace:*",
     "csv": "^6.2.7",
-    "iconv-lite": "^0.6.3"
+    "natural-orderby": "^3.0.2"
   }
 }
